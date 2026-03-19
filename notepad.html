@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<body style="background:black; color:white; font-family:monospace;">
+  
+<button onclick="goHome()">⬅ Back to Home</button>
+
+<h2>Notepad Code</h2>
+
+<pre id="code">
+from tkinter import *
+from tkinter import messagebox
+from tkinter import filedialog
+
+current_file = None
+
+def save_file(event=None):
+    global current_file
+
+    if current_file:
+        content = text_area.get("1.0", END)
+
+        with open(current_file, "w") as file:
+            file.write(content)
+        messagebox.showinfo("Update", "file updated sucessfully")
+
+    else:
+        saveas_file()
+
+def open_file(event=None):
+    global current_file
+    file_path=filedialog.askopenfilename(filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
+    if file_path:
+        current_file=file_path
+        with open(file_path, "r") as file:
+            content = file.read()
+        text_area.delete("1.0", END)
+        text_area.insert("1.0", content)
+        messagebox.showinfo("Load", "Content loaded successfully")
+        
+    else:
+        messagebox.showerror("Error", "File not found")
+        
+def new_file(event=None):
+	result=messagebox.askyesno("New File clear current text")
+	if result:
+		text_area.delete("1.0", END)
+		
+def saveas_file(event=None):
+	global current_file
+	file_path=filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
+	
+	if file_path:
+		current_file=file_path
+		content=text_area.get("1.0", END)
+		with open(file_path, "w")as file:
+			file.write(content)
+		messagebox.showinfo("Save", "file saved sucessfully")
+
+root=Tk()
+
+menu_bar=Menu(root)
+root.config(menu=menu_bar)
+file_menu=Menu(menu_bar, tearoff=0)
+
+menu_bar.add_cascade(label="File", menu=file_menu)
+
+file_menu.add_command(label="Save", command=save_file)
+
+file_menu.add_command(label="Open", command=open_file)
+
+file_menu.add_command(label="New", command=new_file)
+
+file_menu.add_command(label="save as", command=saveas_file)
+
+root.bind("<Control-s>", save_file)
+root.bind("<Control-n>", new_file)
+root.bind("<Control-o>", open_file)
+root.bind("<Control-Shift-s>", saveas_file)
+
+scroll = Scrollbar(root)
+scroll.pack(side=RIGHT, fill=Y)
+
+text_area=Text(root, yscrollcommand=scroll.set)
+text_area.pack(expand=True, fill="both")
+
+scroll.config(command=text_area.yview)
+
+#entry=Entry(root)
+#entry.pack(fill=X)
+
+#button=Button(root, text="save file", command=save_file)
+#button.pack(side="left", fill=X)
+
+#button1=Button(root, text="open file", command=open_file)
+#button1.pack(side="right", fill=X)
+
+#button2=Button(root, text="new file", #command=new_file)
+#button2.pack(side="left", fill=X)
+
+root.mainloop()
+
+</pre>
+
+<button onclick="copyCode()">Copy Code</button>
+
+<script>
+function copyCode() {
+    let text = document.getElementById("code").innerText;
+    navigator.clipboard.writeText(text);
+    alert("Copied!");
+}
+</script>
+
+<script src="script.js"></script>
+
+</body>
+</html>
